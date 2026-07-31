@@ -1,4 +1,6 @@
 
+import models.lombok.RegistrationBodyLombokModel;
+import models.lombok.RegistrationResponceLombokModel;
 import models.pojo.RegistrationBodyPojoModel;
 import models.pojo.RegistrationResponcePojoModel;
 import net.datafaker.Faker;
@@ -45,8 +47,11 @@ public class RegistrationTests {
     public void successfulRegistrationTest_with_pojo() {
 
         RegistrationBodyPojoModel data = new RegistrationBodyPojoModel();
+       // RegistrationBodyPojoModel data = new RegistrationBodyPojoModel(username, password);
         data.setUsername(username);
         data.setPassword(password);
+
+
         RegistrationResponcePojoModel registrationResponce = given()
                 .log().all()
                 .contentType(JSON)
@@ -62,6 +67,31 @@ public class RegistrationTests {
         assertEquals(username, registrationResponce.getUsername());
     }
 
+
+    @Test
+    public void successfulRegistrationTest_with_lombok() {
+
+        RegistrationBodyLombokModel data = new RegistrationBodyLombokModel();
+
+        //RegistrationBodyLombokModel data = new RegistrationBodyLombokModel(username, password);
+        data.setUsername(username);
+        data.setPassword(password);
+
+
+        RegistrationResponceLombokModel registrationResponce = given()
+                .log().all()
+                .contentType(JSON)
+                .body(data)
+                .when()
+                .post("http://bookclub.qa.guru:8100/api/v1/users/register/")
+                .then()
+                .log().all()
+                .statusCode(201)
+                .extract()
+                .as(RegistrationResponceLombokModel.class);
+
+        assertEquals(username, registrationResponce.getUsername());
+    }
     @Test
     public void existingUser400Test() {
 
