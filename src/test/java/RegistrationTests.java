@@ -3,10 +3,9 @@ import models.lombok.RegistrationBodyLombokModel;
 import models.lombok.RegistrationResponceLombokModel;
 import models.pojo.RegistrationBodyPojoModel;
 import models.pojo.RegistrationResponcePojoModel;
-import models.records.ExistingUser400ResponceRecordsModel;
-import models.records.RegistrationBodyRecordsModel;
-import models.records.RegistrationResponceRecordsModel;
+import models.records.*;
 import net.datafaker.Faker;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
@@ -55,7 +54,7 @@ public class RegistrationTests {
         data.setPassword(password);
 
 
-        RegistrationResponcePojoModel registrationResponce = given()
+        RegistrationResponcePojoModel registrationResponse = given()
                 .log().all()
                 .contentType(JSON)
                 .body(data)
@@ -67,7 +66,7 @@ public class RegistrationTests {
                 .extract()
                 .as(RegistrationResponcePojoModel.class);
 
-        assertEquals(username, registrationResponce.getUsername());
+        assertEquals(username, registrationResponse.getUsername());
     }
 
 
@@ -81,7 +80,7 @@ public class RegistrationTests {
         data.setPassword(password);
 
 
-        RegistrationResponceLombokModel registrationResponce = given()
+        RegistrationResponceLombokModel registrationResponse = given()
                 .log().all()
                 .contentType(JSON)
                 .body(data)
@@ -93,7 +92,7 @@ public class RegistrationTests {
                 .extract()
                 .as(RegistrationResponceLombokModel.class);
 
-        assertEquals(username, registrationResponce.getUsername());
+        assertEquals(username, registrationResponse.getUsername());
     }
 
     @Test
@@ -101,7 +100,7 @@ public class RegistrationTests {
 
         RegistrationBodyRecordsModel data = new RegistrationBodyRecordsModel(username, password);
 
-        RegistrationResponceRecordsModel registrationResponce = given()
+        RegistrationResponceRecordsModel registrationResponse = given()
                 .log().all()
                 .contentType(JSON)
                 .body(data)
@@ -113,7 +112,7 @@ public class RegistrationTests {
                 .extract()
                 .as(RegistrationResponceRecordsModel.class);
 
-        assertEquals(username, registrationResponce.username());
+        assertEquals(username, registrationResponse.username());
     }
 
 
@@ -135,7 +134,7 @@ public class RegistrationTests {
                 .body("username", is(username))
                 .body("id", notNullValue());
 
-        ExistingUser400ResponceRecordsModel responce = given()
+        ExistingUser400ResponceRecordsModel response = given()
                 .log().all()
                 .contentType(JSON)
                 .body(data)
@@ -148,15 +147,15 @@ public class RegistrationTests {
                 .as(ExistingUser400ResponceRecordsModel.class);
 
         String expectedError = "A user with that username already exists.";
-        assertEquals(expectedError, responce.username().get(0));
+        assertEquals(expectedError, response.username().get(0));
     }
 
     @Test
     public void invalidUsername400Test() {
 
-        String data = String.format("{\"username\": \"%s\", \"password\": \"%s\"}", username, password);
-
-        given()
+        username = "";
+        RegistrationBodyRecordsModel data = new RegistrationBodyRecordsModel(username, password);
+        ExistingUser400ResponceRecordsModel response = given()
                 .log().all()
                 .contentType(JSON)
                 .body(data)
@@ -165,13 +164,98 @@ public class RegistrationTests {
                 .then()
                 .log().all()
                 .statusCode(400)
-                .body("username", is(username))
-                .body("id", notNullValue());
+                .extract()
+                .as(ExistingUser400ResponceRecordsModel.class);
+        String expectedError = "This field may not be blank.";
+        assertEquals(expectedError, response.username().get(0));
+    }
+
+    @Test
+    public void usernameExceedsMaxLength400Test() {
+
+        String username = RandomStringUtils.randomAlphanumeric(250);
+        RegistrationBodyRecordsModel data = new RegistrationBodyRecordsModel(username, password);
+        ExistingUser400ResponceRecordsModel response = given()
+                .log().all()
+                .contentType(JSON)
+                .body(data)
+                .when()
+                .post("http://bookclub.qa.guru:8100/api/v1/users/register/")
+                .then()
+                .log().all()
+                .statusCode(400)
+                .extract()
+                .as(ExistingUser400ResponceRecordsModel.class);
+        String expectedError = "Ensure this field has no more than 150 characters.";
+        assertEquals(expectedError, response.username().get(0));
+    }
+
+    @Test
+    public void setPasswordExceedsMaxLength400Test() {
+
+        String password = RandomStringUtils.randomAlphanumeric(250);
+        RegistrationBodyRecordsModel data = new RegistrationBodyRecordsModel(username, password);
+        ExistingPassword400ResponceRecordsModel response = given()
+                .log().all()
+                .contentType(JSON)
+                .body(data)
+                .when()
+                .post("http://bookclub.qa.guru:8100/api/v1/users/register/")
+                .then()
+                .log().all()
+                .statusCode(400)
+                .extract()
+                .as(ExistingPassword400ResponceRecordsModel.class);
+        String expectedError = "Ensure this field has no more than 128 characters.";
+        assertEquals(expectedError, response.password().get(0));
+    }
+
+    @Test
+    public void invalidPasswordUser400Test() {
+
+        password = "";
+        username = "";
+        RegistrationBodyRecordsModel data = new RegistrationBodyRecordsModel(username, password);
+        MissingFieldsResponseModel response = given()
+                .log().all()
+                .contentType(JSON)
+                .body(data)
+                .when()
+                .post("http://bookclub.qa.guru:8100/api/v1/users/register/")
+                .then()
+                .log().all()
+                .statusCode(400)
+                .extract()
+                .as(MissingFieldsResponseModel.class);
+        String expectedError = "This field may not be blank.";
+        assertEquals(expectedError, response.username().get(0));
+        assertEquals(expectedError, response.password().get(0));
+    }
+
+
+    @Test
+    public void missingUsernameAndPassword400Test() {
+
+        password = "";
+        RegistrationBodyRecordsModel data = new RegistrationBodyRecordsModel(username, password);
+        ExistingPassword400ResponceRecordsModel response = given()
+                .log().all()
+                .contentType(JSON)
+                .body(data)
+                .when()
+                .post("http://bookclub.qa.guru:8100/api/v1/users/register/")
+                .then()
+                .log().all()
+                .statusCode(400)
+                .extract()
+                .as(ExistingPassword400ResponceRecordsModel.class);
+        String expectedError = "This field is required.";
+        assertEquals(expectedError, response.password().get(0));
     }
     @Test
     public void unsupportedMediaType415Test() {
 
-        String data = String.format("{\"username\": \"%s\", \"password\": \"%s\"}", username, password);
+        RegistrationBodyRecordsModel data = new RegistrationBodyRecordsModel(username, password);
 
         given()
                 .log().all()
@@ -181,7 +265,6 @@ public class RegistrationTests {
                 .then()
                 .log().all()
                 .statusCode(415)
-                .body("username", is(username))
-                .body("id", notNullValue());
+                .body("detail", is("Unsupported media type \"text/plain; charset=ISO-8859-1\" in request."));
     }
 }
