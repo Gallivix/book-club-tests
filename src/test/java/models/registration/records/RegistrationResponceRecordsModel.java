@@ -1,4 +1,4 @@
-package models.records;
+package models.registration.records;
 
 
 public record RegistrationResponceRecordsModel (Integer id, String username, String firstName, String lastName,

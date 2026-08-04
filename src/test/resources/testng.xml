@@ -5,7 +5,7 @@
             <package name=""/> <!-- Укажите ваш пакет, если есть -->
         </packages>
         <classes>
-            <class name="RegistrationTests"/>
+            <class name="tests.RegistrationTests"/>
         </classes>
     </test>
 </suite>

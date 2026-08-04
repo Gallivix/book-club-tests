@@ -1,9 +1,10 @@
+package tests;
 
-import models.lombok.RegistrationBodyLombokModel;
-import models.lombok.RegistrationResponceLombokModel;
-import models.pojo.RegistrationBodyPojoModel;
-import models.pojo.RegistrationResponcePojoModel;
-import models.records.*;
+import models.registration.records.*;
+import models.registration.lombok.RegistrationBodyLombokModel;
+import models.registration.lombok.RegistrationResponceLombokModel;
+import models.registration.pojo.RegistrationBodyPojoModel;
+import models.registration.pojo.RegistrationResponcePojoModel;
 import net.datafaker.Faker;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
