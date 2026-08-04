@@ -23,8 +23,8 @@ public class RegistrationTests {
     @BeforeEach
     public void prepareTestData() {
         Faker faker = new Faker();
-        username = faker.name().firstName();
-        password = faker.name().firstName();
+        username = faker.name().firstName() + "_" + System.currentTimeMillis();
+        password = faker.regexify("[A-Za-z0-9!@#$%^&*]{8,16}");
 
     }
     @Test
@@ -153,8 +153,7 @@ public class RegistrationTests {
     @Test
     public void invalidUsername400Test() {
 
-        username = "";
-        RegistrationBodyRecordsModel data = new RegistrationBodyRecordsModel(username, password);
+        RegistrationBodyRecordsModel data = new RegistrationBodyRecordsModel("", password);
         ExistingUser400ResponceRecordsModel response = given()
                 .log().all()
                 .contentType(JSON)
@@ -213,9 +212,7 @@ public class RegistrationTests {
     @Test
     public void invalidPasswordUser400Test() {
 
-        password = "";
-        username = "";
-        RegistrationBodyRecordsModel data = new RegistrationBodyRecordsModel(username, password);
+        RegistrationBodyRecordsModel data = new RegistrationBodyRecordsModel("", "");
         MissingFieldsResponseModel response = given()
                 .log().all()
                 .contentType(JSON)
@@ -236,8 +233,7 @@ public class RegistrationTests {
     @Test
     public void missingUsernameAndPassword400Test() {
 
-        password = "";
-        RegistrationBodyRecordsModel data = new RegistrationBodyRecordsModel(username, password);
+        RegistrationBodyRecordsModel data = new RegistrationBodyRecordsModel(username, "");
         ExistingPassword400ResponceRecordsModel response = given()
                 .log().all()
                 .contentType(JSON)
@@ -249,7 +245,7 @@ public class RegistrationTests {
                 .statusCode(400)
                 .extract()
                 .as(ExistingPassword400ResponceRecordsModel.class);
-        String expectedError = "This field is required.";
+        String expectedError = "This field may not be blank.";
         assertEquals(expectedError, response.password().get(0));
     }
     @Test
