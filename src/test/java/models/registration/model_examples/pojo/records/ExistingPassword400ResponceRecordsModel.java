@@ -1,4 +1,4 @@
-package models.registration.records;
+package models.registration.model_examples.pojo.records;
 
 
 import java.util.List;
