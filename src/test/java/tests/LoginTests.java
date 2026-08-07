@@ -5,10 +5,8 @@ import models.login.SuccessfulLoginResponseModel;
 import models.login.WrongCredentialsLoginResponseModel;
 import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
-import static io.restassured.http.ContentType.JSON;
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
+import static specs.login.LoginSpec.*;
 
 
 public class LoginTests extends TestBase {
@@ -19,6 +17,47 @@ public class LoginTests extends TestBase {
 
 
     @Test
+    public void successfulLoginTest() {
+
+        LoginBodyModel loginData = new LoginBodyModel(username, password);
+
+        SuccessfulLoginResponseModel LoginResponse = given(loginRequestSpec)
+                .body(loginData)
+                .when()
+                .post("/auth/token/")
+                .then()
+                .spec(sucessfullLoginResponseSpec)
+                .extract().as(SuccessfulLoginResponseModel.class);
+
+        String expectedTokenPath = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
+        String actualAccess = LoginResponse.access();
+        String actualRefresh = LoginResponse.refresh();
+
+        assertThat(actualAccess).startsWith(expectedTokenPath);
+        assertThat(actualRefresh).startsWith(expectedTokenPath);
+        assertThat(actualAccess).isNotEqualTo(actualRefresh);
+    }
+
+    @Test
+    public void wrongCredentialsLoginTest() {
+
+        LoginBodyModel loginData = new LoginBodyModel(username, wrongPassword);
+
+        WrongCredentialsLoginResponseModel LoginResponse = given(loginRequestSpec)
+                .body(loginData)
+                .when()
+                .post("/auth/token/")
+                .then()
+                .spec(wrongCredentialsLoginResponseSpec)
+                .extract().as(WrongCredentialsLoginResponseModel.class);
+
+        String expectedDetailError = "Invalid username or password.";
+        String actualDetailError = LoginResponse.detail();
+
+        assertThat(actualDetailError).isEqualTo(expectedDetailError);
+    }
+
+/*    @Test
     public void successfulLoginTest() {
 
         LoginBodyModel loginData = new LoginBodyModel(username, password);
@@ -71,6 +110,6 @@ public class LoginTests extends TestBase {
         String actualDetailError = LoginResponse.detail();
 
         assertThat(actualDetailError).isEqualTo(expectedDetailError);
-    }
+    }*/
 
 }
