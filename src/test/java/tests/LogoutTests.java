@@ -1,17 +1,15 @@
 package tests;
 
 import models.login.LoginBodyModel;
-
-import models.login.SuccessfulLoginResponseModel;
+import models.logout.LogoutModel;
 import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
-import static io.restassured.http.ContentType.JSON;
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-import static java.lang.String.format;
-import static org.hamcrest.Matchers.notNullValue;
 import static specs.login.LoginSpec.loginRequestSpec;
 import static specs.login.LoginSpec.sucessfullLoginResponseSpec;
-public class LogoutTests<Responce> extends TestBase{
+import static specs.logout.LogoutSpec.logoutResponseSpec;
+import static specs.logout.LogoutSpec.logoutSpec;
+
+public class LogoutTests extends TestBase{
 
 
     String username = "GallivixQaGuru";
@@ -30,19 +28,15 @@ public class LogoutTests<Responce> extends TestBase{
                 .extract().path("refresh");
 
 
+        LogoutModel logoutData = new LogoutModel(refreshToken);
         // Создать модель и убрать в спецификацию
-        String logoutData = format("{\"refresh\": \"%s\"}", refreshToken);
-
-                 given()
-                .log().all()
-                .contentType(JSON)
+        //String logoutData = format("{\"refresh\": \"%s\"}", refreshToken);
+                 given(logoutSpec)
                 .body(logoutData)
-                .basePath("api/v1")
                 .when()
                 .post("/auth/logout/")
                 .then()
-                .log().all()
-                .statusCode(200);
+                         .spec(logoutResponseSpec);
 
         //String logoutData = format("{\"refresh\": \"%s\"}", refreshToken);
 
