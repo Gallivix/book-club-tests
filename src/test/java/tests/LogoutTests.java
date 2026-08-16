@@ -1,16 +1,15 @@
 package tests;
 
 import models.login.LoginBodyModel;
+import models.login.SuccessfulLoginResponseModel;
 import models.logout.LogoutModel;
+import models.logout.SuccessfulLogoutResponseModel;
 import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
-import static specs.login.LoginSpec.loginRequestSpec;
-import static specs.login.LoginSpec.sucessfullLoginResponseSpec;
-import static specs.logout.LogoutSpec.logoutResponseSpec;
-import static specs.logout.LogoutSpec.logoutSpec;
+import static specs.login.LoginSpec.*;
+import static specs.logout.LogoutSpec.*;
 
-public class LogoutTests extends TestBase{
-
+public class LogoutTests extends TestBase {
 
     String username = "GallivixQaGuru";
     String password = "1234";
@@ -19,39 +18,25 @@ public class LogoutTests extends TestBase{
     public void sucessfullLogoutTest() {
 
         LoginBodyModel loginData = new LoginBodyModel(username, password);
-        String refreshToken = given(loginRequestSpec)
+
+        SuccessfulLoginResponseModel loginResponse = given(loginRequestSpec)
                 .body(loginData)
                 .when()
                 .post("/auth/token/")
                 .then()
                 .spec(sucessfullLoginResponseSpec)
-                .extract().path("refresh");
+                .extract()
+                .as(SuccessfulLoginResponseModel.class);
 
+        LogoutModel logoutData = new LogoutModel(loginResponse.refresh());
 
-        LogoutModel logoutData = new LogoutModel(refreshToken);
-        // Создать модель и убрать в спецификацию
-        //String logoutData = format("{\"refresh\": \"%s\"}", refreshToken);
-                 given(logoutSpec)
+        given(logoutRequestSpec)
                 .body(logoutData)
                 .when()
                 .post("/auth/logout/")
                 .then()
-                         .spec(logoutResponseSpec);
-
-        //String logoutData = format("{\"refresh\": \"%s\"}", refreshToken);
-
-
-       /* given()
-                .log().all()
-                .contentType(JSON)
-                .body(logoutData)
-                .formParam("refresh", refreshToken)
-                .basePath("api/v1")
-                .when()
-                .post("/auth/logout/")
-                .then()
-                .log().all()
-                .statusCode(200);       */
-
+                .spec(sucessfullLogoutResponseSpec)
+                .extract()
+                .as(SuccessfulLogoutResponseModel.class);
     }
 }

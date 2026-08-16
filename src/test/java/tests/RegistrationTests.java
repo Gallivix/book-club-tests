@@ -46,10 +46,9 @@ public class RegistrationTests extends TestBase {
         assertThat(registrationResponse.email()).isEmpty();
 
 
-        String ipAddrRegexp = "\"^((25[0-5]|2[0-4]\\\\d|1\\\\d\\\\d|[1-9]?\\\\d)\\\\.){3}\"\n" +
-                "               + \"(25[0-5]|2[0-4]\\\\d|1\\\\d\\\\d|[1-9]?\\\\d)$\"";
+        String ipAddrRegexp = "^((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.){3}(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)$";
 
-        assertThat(registrationResponse.remoteAddr().matches(ipAddrRegexp));
+        assertThat(registrationResponse.remoteAddr()).matches(ipAddrRegexp);
     }
 
     @Test
