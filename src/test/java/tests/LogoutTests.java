@@ -8,16 +8,13 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static specs.login.LoginSpec.*;
 import static specs.logout.LogoutSpec.*;
+import static tests.TestData.*;
 
 public class LogoutTests extends TestBase {
 
-    String username = "GallivixQaGuru";
-    String password = "1234";
-
     @Test
     public void sucessfullLogoutTest() {
-
-        LoginBodyModel loginData = new LoginBodyModel(username, password);
+        LoginBodyModel loginData = new LoginBodyModel(USERNAME, PASSWORD);
 
         SuccessfulLoginResponseModel loginResponse = given(loginRequestSpec)
                 .body(loginData)

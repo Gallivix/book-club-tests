@@ -7,21 +7,16 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static specs.login.LoginSpec.*;
+import static tests.TestData.*;
 
 
 public class LoginTests extends TestBase {
 
-    String username = "GallivixQaGuru";
-    String password = "1234";
-    String wrongPassword = "GallivixQaGuru1234";
-
-
     @Test
     public void successfulLoginTest() {
+        LoginBodyModel loginData = new LoginBodyModel(USERNAME, PASSWORD);
 
-        LoginBodyModel loginData = new LoginBodyModel(username, password);
-
-        SuccessfulLoginResponseModel LoginResponse = given(loginRequestSpec)
+        SuccessfulLoginResponseModel loginResponse = given(loginRequestSpec)
                 .body(loginData)
                 .when()
                 .post("/auth/token/")
@@ -29,21 +24,16 @@ public class LoginTests extends TestBase {
                 .spec(sucessfullLoginResponseSpec)
                 .extract().as(SuccessfulLoginResponseModel.class);
 
-        String expectedTokenPath = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
-        String actualAccess = LoginResponse.access();
-        String actualRefresh = LoginResponse.refresh();
-
-        assertThat(actualAccess).startsWith(expectedTokenPath);
-        assertThat(actualRefresh).startsWith(expectedTokenPath);
-        assertThat(actualAccess).isNotEqualTo(actualRefresh);
+        assertThat(loginResponse.access()).startsWith(JWT_TOKEN_PREFIX);
+        assertThat(loginResponse.refresh()).startsWith(JWT_TOKEN_PREFIX);
+        assertThat(loginResponse.access()).isNotEqualTo(loginResponse.refresh());
     }
 
     @Test
     public void wrongCredentialsLoginTest() {
+        LoginBodyModel loginData = new LoginBodyModel(USERNAME, WRONG_PASSWORD);
 
-        LoginBodyModel loginData = new LoginBodyModel(username, wrongPassword);
-
-        WrongCredentialsLoginResponseModel LoginResponse = given(loginRequestSpec)
+        WrongCredentialsLoginResponseModel loginResponse = given(loginRequestSpec)
                 .body(loginData)
                 .when()
                 .post("/auth/token/")
@@ -51,10 +41,7 @@ public class LoginTests extends TestBase {
                 .spec(wrongCredentialsLoginResponseSpec)
                 .extract().as(WrongCredentialsLoginResponseModel.class);
 
-        String expectedDetailError = "Invalid username or password.";
-        String actualDetailError = LoginResponse.detail();
-
-        assertThat(actualDetailError).isEqualTo(expectedDetailError);
+        assertThat(loginResponse.detail()).isEqualTo(INVALID_CREDENTIALS_ERROR);
     }
 
 /*    @Test

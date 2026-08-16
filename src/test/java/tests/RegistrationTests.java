@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static specs.registration.RegistrationSpec.*;
+import static tests.TestData.*;
 
 
 public class RegistrationTests extends TestBase {
@@ -46,9 +47,7 @@ public class RegistrationTests extends TestBase {
         assertThat(registrationResponse.email()).isEmpty();
 
 
-        String ipAddrRegexp = "^((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.){3}(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)$";
-
-        assertThat(registrationResponse.remoteAddr()).matches(ipAddrRegexp);
+        assertThat(registrationResponse.remoteAddr()).matches(IP_REGEX);
     }
 
     @Test
@@ -75,9 +74,8 @@ public class RegistrationTests extends TestBase {
                 .extract()
                 .as(ExistingUserResponceModel.class);
 
-        String expectedError = "A user with that username already exists.";
-        String actualError = secondRegistrationResponse.username().getFirst();
-        assertThat(actualError).isEqualTo(expectedError);
+        assertThat(secondRegistrationResponse.username().getFirst())
+                .isEqualTo(USER_ALREADY_EXISTS_ERROR);
     }
 
 }

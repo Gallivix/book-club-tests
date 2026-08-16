@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="tests.LogoutTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-08-16T22:51:45.526Z" hostname="DESKTOP-S6NSILN" time="2.341">
+<testsuite name="tests.LogoutTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-08-16T23:27:57.235Z" hostname="DESKTOP-S6NSILN" time="0.406">
   <properties/>
-  <testcase name="sucessfullLogoutTest()" classname="tests.LogoutTests" time="1.968"/>
+  <testcase name="sucessfullLogoutTest()" classname="tests.LogoutTests" time="0.406"/>
   <system-out><![CDATA[Request method:	POST
-Request URI:	http://bookclub.qa.guru:8100/api/v1/auth/token/
+Request URI:	https://book-club.qa.guru/api/v1/auth/token/
 Proxy:			<none>
 Request params:	<none>
 Query params:	<none>
@@ -19,8 +19,8 @@ Body:
     "password": "1234"
 }
 HTTP/1.1 200 OK
-Server: nginx/1.30.4
-Date: Sun, 16 Aug 2026 22:51:46 GMT
+Server: nginx/1.24.0 (Ubuntu)
+Date: Sun, 16 Aug 2026 23:27:56 GMT
 Content-Type: application/json; charset=utf-8
 Content-Length: 489
 Connection: keep-alive
@@ -32,11 +32,11 @@ Referrer-Policy: same-origin
 Cross-Origin-Opener-Policy: same-origin
 
 {
-    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4ODk5NDMwNiwiaWF0IjoxNzg2OTIwNzA2LCJqdGkiOiIzYWYxMDI4OTU1NDE0MDg4YWJiYTMxZTY4YmExNWVhNSIsInVzZXJfaWQiOjc1N30.SwCxUjPYcA4VmJwEVLr-SVnDhdnOsRupQFU8uEMuZic",
-    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg3NTI1NTA2LCJpYXQiOjE3ODY5MjA3MDYsImp0aSI6Ijk4ODE1OGRkZThiODQwMDVhODY1NDNiYWQ1NDNkNmRhIiwidXNlcl9pZCI6NzU3fQ.2c_un4Ysr5n_lnzD_YzBOBRhW0ECyB2as4-oM4pOEZQ"
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4ODk5NjQ3NiwiaWF0IjoxNzg2OTIyODc2LCJqdGkiOiIwN2Y0MzRmNmJmZDA0ODVlYmMyOTZiMDE3YTE0YTM5YyIsInVzZXJfaWQiOjc1N30.NX6N9WdnH6li-BNxBkWmBqc1l1PbxIzI4-HGpa0ANXE",
+    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg3NTI3Njc2LCJpYXQiOjE3ODY5MjI4NzYsImp0aSI6ImI0YzAyZTFmMzI1NjQ3MDA5ZmIyZjE2NzZlMTMxMTFiIiwidXNlcl9pZCI6NzU3fQ.H-U1l_hAltsW-ZIUl_RfhxiBs6e9uvHL4WB3k7-2lmg"
 }
 Request method:	POST
-Request URI:	http://bookclub.qa.guru:8100/api/v1/auth/logout/
+Request URI:	https://book-club.qa.guru/api/v1/auth/logout/
 Proxy:			<none>
 Request params:	<none>
 Query params:	<none>
@@ -48,11 +48,11 @@ Cookies:		<none>
 Multiparts:		<none>
 Body:
 {
-    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4ODk5NDMwNiwiaWF0IjoxNzg2OTIwNzA2LCJqdGkiOiIzYWYxMDI4OTU1NDE0MDg4YWJiYTMxZTY4YmExNWVhNSIsInVzZXJfaWQiOjc1N30.SwCxUjPYcA4VmJwEVLr-SVnDhdnOsRupQFU8uEMuZic"
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4ODk5NjQ3NiwiaWF0IjoxNzg2OTIyODc2LCJqdGkiOiIwN2Y0MzRmNmJmZDA0ODVlYmMyOTZiMDE3YTE0YTM5YyIsInVzZXJfaWQiOjc1N30.NX6N9WdnH6li-BNxBkWmBqc1l1PbxIzI4-HGpa0ANXE"
 }
 HTTP/1.1 200 OK
-Server: nginx/1.30.4
-Date: Sun, 16 Aug 2026 22:51:46 GMT
+Server: nginx/1.24.0 (Ubuntu)
+Date: Sun, 16 Aug 2026 23:27:56 GMT
 Content-Type: application/json; charset=utf-8
 Content-Length: 2
 Connection: keep-alive
