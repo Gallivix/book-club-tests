@@ -1,10 +1,9 @@
 package tests;
 
 import models.login.LoginBodyModel;
-import models.login.SuccessfulLoginResponseModel;
 import models.logout.LogoutModel;
-import models.logout.SuccessfulLogoutResponseModel;
 import org.junit.jupiter.api.Test;
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static specs.login.LoginSpec.*;
 import static specs.logout.LogoutSpec.*;
@@ -16,24 +15,25 @@ public class LogoutTests extends TestBase {
     public void sucessfullLogoutTest() {
         LoginBodyModel loginData = new LoginBodyModel(USERNAME, PASSWORD);
 
-        SuccessfulLoginResponseModel loginResponse = given(loginRequestSpec)
-                .body(loginData)
-                .when()
-                .post("/auth/token/")
-                .then()
-                .spec(sucessfullLoginResponseSpec)
-                .extract()
-                .as(SuccessfulLoginResponseModel.class);
+        // Получаем refresh-токен через jsonPath
+        String refreshToken = step("Авторизация и получение токена", () ->
+             given(loginRequestSpec)
+                    .body(loginData)
+                    .when()
+                    .post("/auth/token/")
+                    .then()
+                    .spec(sucessfullLoginResponseSpec)
 
-        LogoutModel logoutData = new LogoutModel(loginResponse.refresh());
+                    .extract().path("refresh"));
 
-        given(logoutRequestSpec)
-                .body(logoutData)
-                .when()
-                .post("/auth/logout/")
-                .then()
-                .spec(sucessfullLogoutResponseSpec)
-                .extract()
-                .as(SuccessfulLogoutResponseModel.class);
+        step("Отправка запроса logout с refresh-токеном и проверка ответа (200)", () -> {
+            LogoutModel logoutData = new LogoutModel(refreshToken);
+            given(logoutRequestSpec)
+                    .body(logoutData)
+                    .when()
+                    .post("/auth/logout/")
+                    .then()
+                    .spec(sucessfullLogoutResponseSpec);
+        });
     }
 }
