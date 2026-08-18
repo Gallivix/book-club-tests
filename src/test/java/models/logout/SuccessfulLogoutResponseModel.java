@@ -1,4 +1,4 @@
 package models.logout;
 
-public record SuccessfulLogoutResponseModel() {
+public record SuccessfulLogoutResponseModel(String detail) {
 }
