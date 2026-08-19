@@ -6,6 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.ResponseSpecification;
+import models.clubs.ClubResponseModel;
 import models.login.LoginBodyModel;
 import models.login.SuccessfulLoginResponseModel;
 import models.login.WrongCredentialsLoginResponseModel;
@@ -14,6 +15,7 @@ import models.logout.SuccessfulLogoutResponseModel;
 import models.registration.ExistingUserResponceModel;
 import models.registration.RegistrationBodyModel;
 import models.registration.SucessfulRegistrationResponceModel;
+import specs.clubs.ClubsSpec;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -139,5 +141,40 @@ public class ApiClient {
                         "schemas/registration/existing_user_registration_response_schema.json"))
                 .expectBody("username", notNullValue())
                 .build();
+    }
+
+    // Clubs methods
+
+    @Step("Получение списка клубов")
+    public ClubResponseModel getClubs() {
+        return RestAssured.given()
+                .filter(allureFilter)
+                .log().all()
+                .contentType(ContentType.JSON)
+                .basePath("api/v1")
+                .when()
+                .get("/clubs/")
+                .then()
+                .log().all()
+                .spec(ClubsSpec.successfulClubsResponseSpec)
+                .extract()
+                .as(ClubResponseModel.class);
+    }
+
+    @Step("Получение списка клубов (страница {page})")
+    public ClubResponseModel getClubs(int page) {
+        return RestAssured.given()
+                .filter(allureFilter)
+                .log().all()
+                .contentType(ContentType.JSON)
+                .basePath("api/v1")
+                .queryParam("page", page)
+                .when()
+                .get("/clubs/")
+                .then()
+                .log().all()
+                .spec(ClubsSpec.successfulClubsResponseSpec)
+                .extract()
+                .as(ClubResponseModel.class);
     }
 }
